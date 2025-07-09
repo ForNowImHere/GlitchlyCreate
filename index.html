@@ -53,32 +53,37 @@
     e.returnValue = 'Are you sure you want to reload this page?';
   };
 
-  // Detect if iframe failed to load (due to X-Frame-Options)
+  // Show fallback if iframe blocked or empty
   function onIframeError() {
     document.getElementById('iframe').style.display = 'none';
     document.getElementById('fallback').style.display = 'flex';
     document.getElementById('notice').textContent = "Could not load content in iframe due to security restrictions.";
   }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    const iframe = document.getElementById('iframe');
+    iframe.onload = () => {
+      setTimeout(() => {
+        try {
+          const doc = iframe.contentDocument || iframe.contentWindow.document;
+          // If iframe is empty or cross-origin blocked, fallback
+          if (!doc || !doc.body || doc.body.innerHTML.length < 10) {
+            onIframeError();
+          }
+        } catch {
+          // Cross-origin error means iframe blocked, show fallback
+          onIframeError();
+        }
+      }, 3000);
+    };
+  });
 </script>
 </head>
 <body>
   <div id="notice">Loading Keennet via Secure Tunnel...</div>
 
-  <iframe
-    id="iframe"
-    src="https://6b805206eb4c.ngrok-free.app/"
-    onerror="onIframeError()"
-    onload="(() => {
-      // Sometimes iframe won't trigger onerror even if blocked,
-      // so we try a timeout check
-      setTimeout(() => {
-        const iframeDoc = document.getElementById('iframe').contentDocument || document.getElementById('iframe').contentWindow.document;
-        if (!iframeDoc || iframeDoc.body.innerHTML.length < 10) {
-          onIframeError();
-        }
-      }, 3000);
-    })()"
-  ></iframe>
+  <!-- Replace this URL below with your actual ngrok URL -->
+  <iframe id="iframe" src="https://6b805206eb4c.ngrok-free.app/"></iframe>
 
   <div id="fallback">
     <p>Sorry, your browser blocked displaying the content inside this page.</p>
