@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Keennet Portal</title>
+  <style>
+    html, body {
+      margin: 0;
+      height: 100%;
+      overflow: hidden;
+      background: #111;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .notice {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: #ff6f61;
+      color: white;
+      padding: 10px;
+      font-family: sans-serif;
+      text-align: center;
+      z-index: 999;
+    }
+  </style>
+  <script>
+    // Prompt before reload
+    window.onbeforeunload = function () {
+      return "Are you sure you want to reload this page?";
+    };
+  </script>
+</head>
+<body>
+  <div class="notice">Loading Keennet via Secure Tunnel...</div>
+  <iframe src="https://YOUR-NGROK-URL.ngrok-free.app"></iframe>
+</body>
+</html>
